@@ -1,4 +1,11 @@
 export type Combo = {
-    title: string;
-    description: string;
+    sequence: string;
+    damage: string;
+    frame: string;
+    notes: string;
+};
+
+export type ComboCategory = {
+    type: string;
+    combos: Combo[];
 };
