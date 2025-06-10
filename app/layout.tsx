@@ -24,10 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode}) {
                                 <SheetTitle>キャラ一覧</SheetTitle>
                             </SheetHeader>
                             <ul className="space y-2">
-                                {characters.map((name) => (
-                                    <li key={name}>
-                                        <Link href={`/character/${name}`} className="text-blue-600 hover:underline">
-                                            {name}
+                                {characters.map((char) => (
+                                    <li key={char.slug}>
+                                        <Link href={`/character/${char.slug}`} className="text-blue-600 hover:underline">
+                                            {char.displayName}
                                         </Link>
                                     </li>
                                 ))}
