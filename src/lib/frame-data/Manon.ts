@@ -15,4 +15,6 @@ const frameData: FrameData[] = [
     { name: "屈中K", start: "8", active: "4", end: "16", total: "27"},
     { name: "立大K", start: "15", active: "3", end: "23", total: "40"},
     { name: "屈第K", start: "11", active: "2", end: "27", total: "39"},
-]
+];
+
+export default frameData;

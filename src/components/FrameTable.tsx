@@ -17,10 +17,10 @@ export function FrameTable({ data }: { data: FrameData[] }) {
                     {data.map((move, idx) => (
                         <tr key={idx} className="border-t">
                             <td className="px-2 py-1">{move.name}</td>
-                            <td className="px-2 py-1 text-center">{move.start}</td>
-                            <td className="px-2 py-1 text-center">{move.active}</td>
-                            <td className="px-2 py-1 text-center">{move.end}</td>
-                            <td className="px-2 py-1 text-center">{move.total}</td>
+                            <td className="px-2 py-1 text-center">{move.start}F</td>
+                            <td className="px-2 py-1 text-center">{move.active}F</td>
+                            <td className="px-2 py-1 text-center">{move.end}F</td>
+                            <td className="px-2 py-1 text-center">{move.total}F</td>
                         </tr>
                     ))}
                 </tbody>
