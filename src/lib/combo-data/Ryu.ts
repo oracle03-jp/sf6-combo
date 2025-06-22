@@ -20,7 +20,7 @@ const comboData: ComboCategory[] = [
                 damage: "2800",
                 frame: "15",
                 notes: "カウンター時限定"
-            }
+            },
         ]
     }
 ];
