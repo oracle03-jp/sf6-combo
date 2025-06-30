@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { characters } from "@/lib/characters";
 import type { ComboCategory, FrameData } from "@/lib/types";
 import { ComboList } from "@/components/ComboList";
-import { FrameTable } from "@/components/FrameTable";
 import { getFrameData } from "@/lib/frame-data";
 
 export async function generateStaticParams() {
