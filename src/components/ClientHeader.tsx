@@ -2,22 +2,18 @@
 
 import Link from "next/link";
 import { useEffect, useState} from "react";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { characters } from "@/lib/characters";
 import { Menu } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export default function ClientHeader() {
     const [open, setOpen] = useState(false);
-    const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
-        const handleRouteChange = () => setOpen(false);
-        router.events?.on?.("routeChangeComplete", handleRouteChange);
-        return () => {
-            router.events?.off?.("routeChangeComplete", handleRouteChange);
-        };
-    }, [router]);
+        setOpen(false);
+    }, [pathname]);
 
     return (
         <header className="flex items-center p-4 shadow bg-white sticky top-0 z-50">
