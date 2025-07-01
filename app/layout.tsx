@@ -1,5 +1,9 @@
+"use client";
+
 import "../src/styles/globals.css";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { characters } from "@/lib/characters";
 import { Menu } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -11,6 +15,19 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode}) {
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const handleRouteChange = () => {
+            setOpen(false);
+        };
+        router.events?.on?.("routeChangeComplete", handleRouteChange);
+        return () => {
+            router.events?.off?.("routeChangeComplete", handleRouteChange);
+        };
+    }, [router]);
+
     return (
         <html lang="ja">
             <body className="bg-gray-100 text-gray-800">
@@ -26,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode}) {
                             <ul className="space y-2">
                                 {characters.map((char) => (
                                     <li key={char.slug}>
-                                        <Link href={`/character/${char.slug}`} className="text-blue-600 hover:underline">
+                                        <Link href={`/character/${char.slug}`} className="text-blue-600 hover:underline" onClick={() => setOpen(false)}>
                                             {char.displayName}
                                         </Link>
                                     </li>
