@@ -5,9 +5,15 @@ export type Combo = {
     notes: string;
 };
 
+export type ComboGroup = {
+    label: string;
+    combos: Combo[];
+}
+
 export type ComboCategory = {
     type: string;
-    combos: Combo[];
+    combos?: Combo[];
+    groups?: ComboGroup[];
 };
 
 export type FrameData = {
