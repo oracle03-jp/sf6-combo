@@ -1,8 +1,9 @@
 export type Combo = {
+    name?: string;
     sequence: string;
-    damage: string;
-    frame: string;
-    notes: string;
+    damage?: string;
+    frame?: string;
+    notes?: string;
 };
 
 export type ComboGroup = {
