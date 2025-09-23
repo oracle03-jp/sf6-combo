@@ -128,6 +128,13 @@ const comboData: ComboCategory[] = [
                         damage: "",
                         frame: "",
                         notes: ""
+                    },
+                                        {
+                        name: "",
+                        sequence: "",
+                        damage: "",
+                        frame: "",
+                        notes: ""
                     }
                 ]
             },
