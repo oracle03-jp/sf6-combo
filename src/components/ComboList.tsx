@@ -17,7 +17,7 @@ export function ComboList({ data }: { data:ComboCategory[] }) {
                     {category.combos.map((combo, i) => (
                         <div key={i} className="p-4 border rounded shadow bg-white">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="font-semibold text-lg">コンボ{i + 1}</span>
+                                <span className="font-semibold text-lg">{combo.name}</span>
                             </div>
                             <div className="p-3 border border-gray-300 bg-gray-50 rounded text-lg font-mono mb-2">
                                 {combo.sequence || <span className="text^gray-400">-</span>}
