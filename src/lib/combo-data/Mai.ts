@@ -92,13 +92,13 @@ const comboData: ComboCategory[] = [
         type: "画面端コンボ",
         combos: [
             {
-                sequence: "ジャンプ強K > 弱K > 昇龍拳",
+                sequence: "立大P > 強龍炎舞 > 強龍炎陣(or SA1)",
                 damage: "2800",
                 frame: "15",
                 notes: "カウンター時限定"
             },
             {
-                sequence: "ジャンプ強K > 弱K > 昇龍拳",
+                sequence: "引大K(TC) > 中龍炎陣(or SA1)",
                 damage: "2800",
                 frame: "15",
                 notes: "カウンター時限定"
