@@ -130,7 +130,7 @@ export default async function CharacterPage({ params }: { params: { name: string
 
     // 認証状態（下書き作成の可否）
     const { data: { user } } = await supabase.auth.getUser()
-    const canCreate = true
+    const canCreate = !!user
     const canEditAdmin = isAdmin
 
     return (

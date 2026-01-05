@@ -1,6 +1,6 @@
 export default function HomePage() {
     return (
-        <div className="space y-6">
+        <div className="space-y-6">
             <section>
                 <h2 className="text-3xl font-bold mb-2">SF6とは</h2>
                 <p className="text-gray-700 leading-relaxed">
