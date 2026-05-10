@@ -104,7 +104,7 @@ export default function ClientHeader() {
                                 <li key={char.slug}>
                                     <Link
                                     href={`/character/${char.slug}`}
-                                    className="text-blue-600 hover:underline"
+                                    className="text-lg text-blue-600 hover:underline"
                                 >
                                     {char.displayName}
                                 </Link>

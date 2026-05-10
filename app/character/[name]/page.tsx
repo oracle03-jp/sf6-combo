@@ -94,7 +94,7 @@ export default async function CharacterPage({ params }: { params: { name: string
     const char = characters.find((c) => c.slug === slug);
     if (!char) notFound();    
     
-    const supabase = createClient()
+    const supabase = await createClient()
     const role = await getMyRole()
     const isAdmin = role === "admin"
 

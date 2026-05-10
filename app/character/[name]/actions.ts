@@ -9,7 +9,7 @@ function parseDamage(input: FormDataEntryValue | null): number {
 }
 
 export async function createComboAction(formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, error: 'ログインが必要です。' }
 
@@ -44,7 +44,7 @@ export async function createComboAction(formData: FormData) {
 }
 
 export async function updateComboAction(formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, error: 'ログインが必要です。' }
 
@@ -81,7 +81,7 @@ export async function updateComboAction(formData: FormData) {
 }
 
 export async function deleteComboAction(formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, error: 'ログインが必要です。' }
 
