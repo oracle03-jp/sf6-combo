@@ -11,6 +11,8 @@ import ComboCard from "./ComboCard";
 import { createComboAction } from "./actions";
 import type { ComboRow } from "./ComboCard";
 
+export const dynamic = "force-dynamic"
+
 type DBCombo = {
     id: string
     character_slug: string
@@ -99,8 +101,26 @@ export default async function CharacterPage({
     if (!char) notFound();    
     
     const supabase = await createClient()
-    const role = await getMyRole()
-    const isAdmin = role === "admin"
+    
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    let isAdmin = false
+
+    if (user) {
+        const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single()
+
+        if (profileError) {
+            console.error("[profiles] fetch error: ", profileError)
+        }
+
+        isAdmin = profile?.role === "admin"
+    }
 
     const base = supabase
         .from("combos")
@@ -111,8 +131,12 @@ export default async function CharacterPage({
         .order("condition")
         .order("sort_order")
 
-    const { data: rows, error } = isAdmin ? await base : await base.eq("is_published", true)
+    const { data: rows, error } = isAdmin
+        ? await base 
+        : await base.eq("is_published", true)
+
     if (error) console.error("[combos] fetch error:", error)
+
     const rawRows: DBCombo[] = (rows ?? []) as DBCombo[] 
 
     const comboRows: ComboRow[] = rawRows.map((r) => ({
@@ -133,8 +157,7 @@ export default async function CharacterPage({
     const comboData: ComboCategory[] = adaptToComboCategories(rawRows)
 
     // 認証状態（下書き作成の可否）
-    const { data: { user } } = await supabase.auth.getUser()
-    const canCreate = !!user
+    const canCreate = isAdmin
     const canEditAdmin = isAdmin
 
     return (
