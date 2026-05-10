@@ -88,8 +88,12 @@ export async function generateStaticParams() {
   return characters.map((char) => ({ name: char.slug })); 
 }
 
-export default async function CharacterPage({ params }: { params: { name: string } }) {
-    const slug = params.name;
+export default async function CharacterPage({
+     params }: { 
+        params: Promise<{ name: string }>
+     }) {
+    const { name } = await params;
+    const slug = name
 
     const char = characters.find((c) => c.slug === slug);
     if (!char) notFound();    
