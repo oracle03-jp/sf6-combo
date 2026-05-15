@@ -44,7 +44,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-[80vh" items-center justify-center>
+        <div className="flex min-h-[80vh] items-center justify-center">
             <div className="w-full max-w-md rounded-2xl border bg-white px-8 py-6 shadow-sm">
                 <h1 className="mb-4 text-center text-2xl font-bold">
                     ログイン

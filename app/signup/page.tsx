@@ -31,7 +31,7 @@ export default function SignupPage() {
                 password,
                 options: {
                     data: {
-                        name: username.trim(),
+                        display_name: username.trim(),
                     },
                 },
             })

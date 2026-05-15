@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import Link from "next/link"
 
 export default function ProfilePage() {
     const [displayName, setDisplayName] = useState("")
@@ -12,11 +13,13 @@ export default function ProfilePage() {
     
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState<string | null>(null)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
         return () => {
-            if (avatarPreview?.startsWith("blob:")) URL.revokeObjectURL(avatarPreview);
+            if (avatarPreview?.startsWith("blob:"))
+                URL.revokeObjectURL(avatarPreview);
         };
     }, [avatarPreview]);
 
@@ -29,9 +32,12 @@ export default function ProfilePage() {
             } = await supabase.auth.getUser()
 
             if (!user) {
-                router.push("/login")
+                setIsLoggedIn(false)
+                setLoading(false)
                 return
             }
+
+            setIsLoggedIn(true)
 
             const { data, error } = await supabase
                 .from("profiles")
@@ -42,80 +48,118 @@ export default function ProfilePage() {
             if (!error && data) {
                 setDisplayName(data.display_name ?? "")
                 setRole(data.role);
-                setAvatarPreview(data.avatar_url ?? null);
+                setAvatarPreview(data.avatar_url ?? null)
             }
 
-            setLoading(false);
-        })();
-    }, [router]);
+            setLoading(false)
+        })()
+    }, [])
 
+    //プロフィール保存処理
     const handleSave = async (e: FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setMessage(null);
+        e.preventDefault()
+        setLoading(true)
+        setMessage(null)
 
         const supabase = createClient();
         const {
             data: { user },
-        } = await supabase.auth.getUser();
+        } = await supabase.auth.getUser()
 
         if (!user) {
-            router.push("/login");
-            return;
+            setIsLoggedIn(false)
+            setLoading(false)
+            return
         }
 
         try { 
-            let avatarUrlToSave: string | null = null;
+            let avatarUrlToSave: string | null = null
 
             if (avatarFile) {
-                const ext = avatarFile.name.split(".").pop() || "png";
-                const path = `${user.id}/avatar.${ext}`;
+                const ext = avatarFile.name.split(".").pop() || "png"
+                const path = `${user.id}/avatar-${Date.now()}.${ext}`
 
                 const { error: uploadError } = await supabase.storage
                     .from("avatars")
-                    .upload(path, avatarFile, { upsert: true });
+                    .upload(path, avatarFile)
 
-                if (uploadError) throw uploadError;
+                if (uploadError) throw uploadError
 
-                const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-                avatarUrlToSave = data.publicUrl;
+                const { data } = supabase.storage
+                .from("avatars")
+                .getPublicUrl(path)
 
-                setAvatarPreview(avatarUrlToSave);
-                setAvatarFile(null);
+                avatarUrlToSave = data.publicUrl
             }
 
-            const payload: { display_name: string; avatar_url?: string } = {
+            const payload = {
                 display_name: displayName,
-            };
-            if (avatarUrlToSave) payload.avatar_url = avatarUrlToSave;
+                avatar_url: avatarUrlToSave ?? avatarPreview,
+            }
 
-            const { error } = await supabase
+            const { data: updatedProfile, error: profileError } = await supabase
                 .from("profiles")
                 .update(payload)
-                .eq("id", user.id);
+                .eq("id", user.id)
+                .select("display_name, role, avatar_url")
+                .single()
 
-            if (error) throw error;
+            if (profileError) throw profileError
 
-            setMessage("プロフィールを保存しました。");
+            setDisplayName(updatedProfile.display_name ?? "")
+            setRole(updatedProfile.role ?? "user")
+            setAvatarPreview(updatedProfile.avatar_url ?? null)
 
-            window.dispatchEvent(new Event("profile-updated"));
-            router.refresh();
-        } catch (err: any) {
-            setMessage(err.message ?? "保存に失敗しました。");
+            if (avatarUrlToSave) {
+                setAvatarPreview(avatarUrlToSave)
+            }
+
+            setMessage("プロフィールを保存しました。")
+
+            window.dispatchEvent(new Event("profile-updated"))
+            router.refresh()
+        } catch (err) {
+            if (err instanceof Error) {
+                setMessage(err.message)
+            } else {
+                setMessage("保存に失敗しました")
+            }
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
     const  handleLogout = async () => {
         const supabase = createClient()
         await supabase.auth.signOut()
+        window.dispatchEvent(new Event("profile-updated"))
         router.push("/")
         router.refresh()
-    };
+    }
 
     if (loading) {
         return <div className="p-6">読みこみ中...</div>
+    }
+
+    if (!isLoggedIn) {
+        return (
+            <div className="mx-auto max-w-md space-y-6 rounded-2xl border bg-white p-6 text-center">
+                <h1 className="text-2xl font-bold">プロフィール</h1>
+
+                <p className="text-2xl text-gray-600">
+                    プロフィールを表示・編集するにはログインが必要です。
+                </p>
+
+                <div className="flex justify-center gap-3">
+                    <Link
+                        href="/signup"
+                        className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50"
+                    >
+                        サインアップ
+                    </Link>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -133,7 +177,7 @@ export default function ProfilePage() {
                                 src={avatarPreview}
                                 alt="avatar"
                                 className="h-full w-full object-cover"
-                            />
+                                />
                             ) : (
                                 <div className="h-full w-full flex items-center justify-center text-xs text-gray-500">
                                     no image
@@ -147,12 +191,14 @@ export default function ProfilePage() {
                             onChange={(e) => {
                                 const f = e.target.files?.[0] ?? null;
 
+                                if (!f) return
+
                                 if (avatarPreview?.startsWith("blob:")) {
                                     URL.revokeObjectURL(avatarPreview);
                                 }
 
                                 setAvatarFile(f);
-                                setAvatarPreview(f ? URL.createObjectURL(f) : avatarPreview);
+                                setAvatarPreview(URL.createObjectURL(f));
                             }}
                             className="text-sm"
                         />
@@ -188,7 +234,7 @@ export default function ProfilePage() {
                         disabled={loading}
                         className="rounded-md border bg-black px-4 py-2 text-sm text-white disabled:opacity-60"
                     >
-                        保存する
+                        {loading ? "保存中..." : "保存する"}
                     </button>
 
                     <button
