@@ -36,7 +36,15 @@ export async function createComboAction(formData: FormData) {
     return { ok: false as const, error: 'コンボとDMGは必須項目です。' }
   }
 
-  const { error } = await supabase.from('combos').insert(payload)
+  const { data, error } = await supabase
+    .from('combos')
+    .insert(payload)
+    .select()
+
+  console.log('[createComboAction payload]', payload)
+  console.log('[createComboAction data]', data)
+  console.log('[createComboAction error]', error)
+
   if (error) return { ok: false as const, error: error.message }
 
   revalidatePath(`/character/${slug}`)
