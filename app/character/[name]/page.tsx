@@ -239,7 +239,7 @@ export default async function CharacterPage({
                             />
                         </div>
                         <label className="flex items-end gap-2">
-                            <input type="checkbox" name="publish" className="size-4" disabled={!isAdmin} />
+                            <input type="checkbox" name="publish" defaultChecked className="size-4" disabled={!isAdmin} />
                             <span className="text-sm">公開フラグ{!isAdmin && " (adminのみ) "}</span>
                         </label>
 
